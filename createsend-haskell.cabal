@@ -59,7 +59,7 @@ Source-Repository head
 Source-Repository this
   Type:		git
   Location:	https://github.com/pavpen/createsend-haskell.git
-  Tag:		3.0.0.1-alpha.0
+  Tag:		3.0.0.1-alpha.1
 
 
 Library
