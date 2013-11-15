@@ -47,6 +47,11 @@ Homepage:	https://github.com/pavpen/createsend-haskell
 Bug-Reports:	https://github.com/pavpen/createsend-haskell/issues
 
 
+Flag build-tests
+  Description:	Build test executables.
+  Default:	False
+
+
 Source-Repository head
   Type:		git
   Location:	https://github.com/pavpen/createsend-haskell.git
@@ -60,10 +65,13 @@ Source-Repository this
 Library
   Hs-Source-Dirs:	src
   Exposed-Modules:	CreateSendAPI.V3
-                        , CreateSendAPI.V3.Util
-                        , CreateSendAPI.V3.Session
                         , CreateSendAPI.V3.List
+                        , CreateSendAPI.V3.List.Subscribers
                         , CreateSendAPI.V3.List.Webhooks
+                        , CreateSendAPI.V3.PagedResult
+                        , CreateSendAPI.V3.Session
+                        , CreateSendAPI.V3.Subscriber
+                        , CreateSendAPI.V3.Util
   Build-Depends:	base < 5
                         , aeson < 1.0
                         , attoparsec-conduit >= 1.0 && <  2.0
@@ -76,3 +84,28 @@ Library
                         , time >= 1.0 && < 2.0
                         , transformers < 1.0
                         , vector < 1.0
+
+Executable webhooks
+  if flag(build-tests)
+      Buildable: True
+  else
+      Buildable: False
+
+  Main-Is:		tests/webhooks.hs
+  Build-Depends:	base
+                        , createsend-haskell
+                        , aeson < 1.0
+                        , bytestring < 1.0
+
+Executable subscribers
+  if flag(build-tests)
+      Buildable: True
+  else
+      Buildable: False
+
+  Main-Is:		tests/subscribers.hs
+  Build-Depends:	base
+                        , createsend-haskell
+                        , aeson < 1.0
+                        , bytestring < 1.0
+                        , data-default < 1.0
