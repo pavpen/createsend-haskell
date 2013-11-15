@@ -26,9 +26,13 @@ import           Network.HTTP.Conduit    (Request, RequestBody (RequestBodyLBS),
 					  withManager)
 
 import           CreateSendAPI.V3.Session (ListRequest (..))
-import           CreateSendAPI.V3.Util	  (sinkByteString)
+import           CreateSendAPI.V3.Util	  (httpGetByteString, sinkByteString)
 
 
+
+--
+-- Data Types:
+--
 
 data WebhookEvents = WebhookEvents	{ webhookEvtSubscribe :: Bool
 					, webhookEvtDeactivate :: Bool
@@ -39,19 +43,19 @@ data WebhookEvents = WebhookEvents	{ webhookEvtSubscribe :: Bool
 data WebhookPayloadFormat = WebhookFmtJSON | WebhookFmtXML
 	deriving (Show, Eq)
 
-data Webhook = Webhook	{ webhookID :: T.Text
-			, webhookEvents :: WebhookEvents
-			, webhookURL :: T.Text
-			, webhookStatus :: T.Text
-			, webhookPayloadFormat :: WebhookPayloadFormat
-			}
-	deriving (Show, Eq)
+data WebhookDetails = WebhookDetails
+		    { webhookID :: T.Text
+		    , webhookEvents :: WebhookEvents
+		    , webhookURL :: T.Text
+		    , webhookStatus :: T.Text
+		    , webhookPayloadFormat :: WebhookPayloadFormat
+		    } deriving (Show, Eq)
 
-data CreateWebhookParams = CreateWebhookParams
-	{ createWebhookEvents :: WebhookEvents
-	, createWebhookURL :: T.Text
-	, createWebhookPayloadFormat :: WebhookPayloadFormat
-	}
+
+
+--
+-- Data Type Instances, and Utility Functions:
+--
 
 webhookEventsToStrList :: WebhookEvents -> [String]
 webhookEventsToStrList (WebhookEvents {..}) = l3
@@ -91,16 +95,20 @@ instance FromJSON WebhookPayloadFormat where
 	  "Xml" -> return WebhookFmtXML
 	  _ -> fail $ "Unrecognized webhook payload format: " ++ (show o)
 
-instance FromJSON Webhook where
-    parseJSON (Object v) =	Webhook <$>
+instance FromJSON WebhookDetails where
+    parseJSON (Object v) = WebhookDetails <$>
     				v .: "WebhookID" <*>
 				v .: "Events" <*>
 				v .: "Url" <*>
 				v .: "Status" <*>
 				v .: "PayloadFormat"
-    parseJSON _ = fail "Expected a JSON object when parsing a Webhook."
+    parseJSON _ = fail "Expected a JSON object when parsing WebhookDetails."
 
 
+
+--
+-- HTTP Methods:
+--
 
 --getWebhooksJSON :: (MonadIO m, MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                    C.MonadThrow m) =>
@@ -119,69 +127,54 @@ getWebhooks listReq = do
 	v <- getWebhooksJSON listReq
 	case fromJSON v of
 	  Error msg -> fail msg
-	  Success res -> return (res :: V.Vector Webhook)
+	  Success res -> return (res :: V.Vector WebhookDetails)
 
 createWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
-                  C.MonadThrow m) =>
-                 ListRequest r -> CreateWebhookParams -> m (Maybe B.ByteString)
-createWebhook (ListRequest listReq) (CreateWebhookParams {..}) =
-    withManager $ \manager -> do
-	let req = listReq {
-		    path = (path listReq) `BS.append` "/webhooks.json"
-		    , method = "POST"
-		    , requestBody = RequestBodyLBS $ encode $ object [
-			"Events" .= webhookEventsToStrList createWebhookEvents,
-			"Url" .= createWebhookURL,
-			"PayloadFormat" .= webhookPayloadFormatToStr
-				createWebhookPayloadFormat]
-		    }
-	res <- http req manager
-	responseBody res $$+- (sinkByteString 1000000)
+                  C.MonadThrow m)
+		 => ListRequest r -> WebhookEvents -> T.Text
+		 -> WebhookPayloadFormat -> m (Maybe B.ByteString)
+createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
+    httpGetByteString $
+	req { path = (path req) `BS.append` "/webhooks.json"
+	    , method = "POST"
+	    , requestBody = RequestBodyLBS $ encode $ object [
+		"Events" .= webhookEventsToStrList webhookEvents,
+		"Url" .= webhookURL,
+		"PayloadFormat" .= webhookPayloadFormatToStr payloadFormat]
+	    }
 
 --activateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                    C.MonadThrow m, r ~ C.ResourceT m) =>
 --                   ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
-activateWebhook (ListRequest listReq) webhookID = withManager $ \manager -> do
-	let req = listReq {
-		    path = (path listReq) `BS.append` "/webhooks/" `BS.append`
-			webhookID `BS.append` "/activate.json"
-		    , method = "PUT"
-		    }
-	res <- http req manager
-	responseBody res $$+- (sinkByteString 1000000)
+activateWebhook (ListRequest req) webhookID = httpGetByteString $
+	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
+		webhookID `BS.append` "/activate.json"
+	    , method = "PUT"
+	    }
 
 --deactivateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                      C.MonadThrow m) =>
 --                     ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
-deactivateWebhook (ListRequest listReq) webhookID = withManager $ \manager -> do
-	let req = listReq {
-		    path = (path listReq) `BS.append` "/webhooks/" `BS.append`
-			webhookID `BS.append` "/deactivate.json"
-		    , method = "PUT"
-		    }
-	res <- http req manager
-	responseBody res $$+- (sinkByteString 1000000)
+deactivateWebhook (ListRequest req) webhookID = httpGetByteString $
+	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
+		webhookID `BS.append` "/deactivate.json"
+	    , method = "PUT"
+	    }
 
 --deleteWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                  C.MonadThrow m) =>
 --                 ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
-deleteWebhook (ListRequest listReq) webhookID = withManager $ \manager -> do
-	let req = listReq {
-		    path = (path listReq) `BS.append` "/webhooks/" `BS.append`
-			webhookID `BS.append` ".json"
-		    , method = "DELETE"
-		    }
-	res <- http req manager
-	responseBody res $$+- (sinkByteString 1000000)
+deleteWebhook (ListRequest req) webhookID = httpGetByteString $
+	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
+		webhookID `BS.append` ".json"
+	    , method = "DELETE"
+	    }
 
 --testWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                C.MonadThrow m) =>
 --               ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
-testWebhook (ListRequest listReq) webhookID = withManager $ \manager -> do
-	let req = listReq {
-		    path = (path listReq) `BS.append` "/webhooks/" `BS.append`
-			webhookID `BS.append` "/test.json"
-		    , method = "GET"
-		    }
-	res <- http req manager
-	responseBody res $$+- (sinkByteString 1000000)
+testWebhook (ListRequest req) webhookID = httpGetByteString $
+	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
+		webhookID `BS.append` "/test.json"
+	    , method = "GET"
+	    }

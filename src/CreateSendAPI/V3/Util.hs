@@ -2,12 +2,29 @@
 
 module CreateSendAPI.V3.Util where
 
-import CorePrelude (liftIO)
-import qualified Data.ByteString.Char8	 as B
-import qualified Data.ByteString.Internal as B
-import qualified Data.Conduit		 as C
+import 		 CorePrelude			(liftIO)
+import		 Data.Aeson.Parser		(json)
+import qualified Data.ByteString.Char8		as B
+import qualified Data.ByteString.Internal	as B
+import 		 Data.Conduit			(($$+-))
+import qualified Data.Conduit			as C
+import 		 Data.Conduit.Attoparsec	(sinkParser)
+import 		 Network.HTTP.Conduit		(Response (..), http,
+						 withManager)
 import qualified Foreign as F
 
+
+
+
+
+
+httpGetJSON req = withManager $ \manager -> do
+	res <- http req manager
+	responseBody res $$+- sinkParser json
+
+httpGetByteString req = withManager $ \manager -> do
+	res <- http req manager
+	responseBody res $$+- (sinkByteString 1000000)
 
 -- sinkByteString from <http://hackage.haskell.org/package/http-conduit-downloader-1.0.3/docs/src/Network-HTTP-Conduit-Downloader.html>:
 bufSize :: Int
