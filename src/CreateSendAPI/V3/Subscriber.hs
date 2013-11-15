@@ -13,6 +13,8 @@ import qualified Data.Text			as T
 import           Data.Time.Clock		(UTCTime)
 import qualified Data.Vector			as V
 
+import 		 CreateSendAPI.V3.Util		(cmReadDate)
+
 
 --
 -- Data Types:
@@ -69,7 +71,7 @@ instance FromJSON Details where
     parseJSON (JSON.Object v) = Details <$>
     				v .: "EmailAddress" <*>
 				v .: "Name" <*>
-				v .: "Date" <*>
+				(cmReadDate <$> v .: "Date") <*>
 				v .: "State" <*>
 				v .: "CustomFields" <*>
 				v .: "ReadsEmailWith"

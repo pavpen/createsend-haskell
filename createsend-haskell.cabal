@@ -80,6 +80,7 @@ Library
                         , conduit >= 1.0 && < 2.0
                         , data-default < 1.0
                         , http-conduit >= 0.1 && < 2.0
+                        , old-locale >= 1.0 && < 2.0
                         , text < 1.0
                         , time >= 1.0 && < 2.0
                         , transformers < 1.0

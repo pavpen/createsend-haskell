@@ -9,9 +9,11 @@ import qualified Data.ByteString.Internal	as B
 import 		 Data.Conduit			(($$+-))
 import qualified Data.Conduit			as C
 import 		 Data.Conduit.Attoparsec	(sinkParser)
+import 		 Data.Time			(UTCTime, readTime)
+import qualified Foreign as F
 import 		 Network.HTTP.Conduit		(Response (..), http,
 						 withManager)
-import qualified Foreign as F
+import 		 System.Locale			(defaultTimeLocale)
 
 
 
@@ -25,6 +27,13 @@ httpGetJSON req = withManager $ \manager -> do
 httpGetByteString req = withManager $ \manager -> do
 	res <- http req manager
 	responseBody res $$+- (sinkByteString 1000000)
+
+cmReadDate :: String -> UTCTime
+cmReadDate str =
+    case reads str of
+	((res, _):_) -> res
+	_ -> readTime defaultTimeLocale "%F" str
+
 
 -- sinkByteString from <http://hackage.haskell.org/package/http-conduit-downloader-1.0.3/docs/src/Network-HTTP-Conduit-Downloader.html>:
 bufSize :: Int
