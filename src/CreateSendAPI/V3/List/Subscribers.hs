@@ -48,3 +48,55 @@ getActiveSubscribers req qParams = do
 	case fromJSON v of
 	  Error msg -> fail msg
 	  Success res -> return (res :: SubscriberResultsPage)
+
+
+getUnconfirmedSubscribersJSON (ListRequest req) qParams  = httpGetJSON $
+    req { path = (path req) `BS.append` "/unconfirmed.json?" `BS.append`
+    		(B.pack $ subscriberQueryParamsToStr qParams)
+	, method = "GET"
+	}
+
+getUnconfirmedSubscribers req qParams = do
+	v <- getUnconfirmedSubscribersJSON req qParams
+	case fromJSON v of
+	  Error msg -> fail msg
+	  Success res -> return (res :: SubscriberResultsPage)
+
+
+getUnsubscribedSubscribersJSON (ListRequest req) qParams  = httpGetJSON $
+    req { path = (path req) `BS.append` "/unsubscribed.json?" `BS.append`
+    		(B.pack $ subscriberQueryParamsToStr qParams)
+	, method = "GET"
+	}
+
+getUnsubscribedSubscribers req qParams = do
+	v <- getUnsubscribedSubscribersJSON req qParams
+	case fromJSON v of
+	  Error msg -> fail msg
+	  Success res -> return (res :: SubscriberResultsPage)
+
+
+getBouncedSubscribersJSON (ListRequest req) qParams  = httpGetJSON $
+    req { path = (path req) `BS.append` "/bounced.json?" `BS.append`
+    		(B.pack $ subscriberQueryParamsToStr qParams)
+	, method = "GET"
+	}
+
+getBouncedSubscribers req qParams = do
+	v <- getBouncedSubscribersJSON req qParams
+	case fromJSON v of
+	  Error msg -> fail msg
+	  Success res -> return (res :: SubscriberResultsPage)
+
+
+getDeletedSubscribersJSON (ListRequest req) qParams  = httpGetJSON $
+    req { path = (path req) `BS.append` "/deleted.json?" `BS.append`
+    		(B.pack $ subscriberQueryParamsToStr qParams)
+	, method = "GET"
+	}
+
+getDeletedSubscribers req qParams = do
+	v <- getDeletedSubscribersJSON req qParams
+	case fromJSON v of
+	  Error msg -> fail msg
+	  Success res -> return (res :: SubscriberResultsPage)

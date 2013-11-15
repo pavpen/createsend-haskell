@@ -6,6 +6,7 @@ import 		 Data.Aeson.Types	(Result (..))
 import qualified Data.ByteString.Char8	as BSC8
 import 		 Data.Default		(def)
 import qualified Data.Foldable		as F
+import qualified Data.Vector		as V
 import 		 System.IO		(hFlush, stdout)
 
 
@@ -21,6 +22,7 @@ main = do
     let authReq = reqFromAPIKey (BSC8.pack apiKey)
     let listReq = listReqFromAPIKeyReq authReq (BSC8.pack listId)
     -- | Print a page of test list's active subscribers:
-    page <- getActiveSubscribers listReq def
+    page <- getBouncedSubscribers listReq def
     F.mapM_ (putStrLn . show) (subscriberResults page)
+    putStrLn $ show $ page { subscriberResults = V.fromList [] }
     return ()

@@ -86,27 +86,30 @@ Library
                         , transformers < 1.0
                         , vector < 1.0
 
-Executable webhooks
+Executable tests/webhooks
   if flag(build-tests)
       Buildable: True
   else
       Buildable: False
 
-  Main-Is:		tests/webhooks.hs
+  Main-Is:		webhooks.hs
+  Hs-Source-Dirs:	tests
   Build-Depends:	base
                         , createsend-haskell
                         , aeson < 1.0
                         , bytestring < 1.0
 
-Executable subscribers
+Executable tests/subscribers
   if flag(build-tests)
       Buildable: True
   else
       Buildable: False
 
-  Main-Is:		tests/subscribers.hs
+  Main-Is:		subscribers.hs
+  Hs-Source-Dirs:	tests
   Build-Depends:	base
                         , createsend-haskell
                         , aeson < 1.0
                         , bytestring < 1.0
                         , data-default < 1.0
+                        , vector < 1.0

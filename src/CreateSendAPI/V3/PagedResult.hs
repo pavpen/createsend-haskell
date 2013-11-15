@@ -19,7 +19,7 @@ import qualified CreateSendAPI.V3.Subscriber	as Subscriber
 -- Data Types:
 --
 
-data OrderDirection = Asc | Desc
+data OrderDirection = Asc | Desc deriving (Show, Eq)
 
 data SubscriberResultsPage = SubscriberResultsPage
 	{ subscriberResults :: V.Vector Subscriber.Details
@@ -30,7 +30,7 @@ data SubscriberResultsPage = SubscriberResultsPage
 	, subscriberRecordsOnThisPage :: Integer
 	, subscriberTotalNumberOfRecords :: Integer
 	, subscriberNumberOfPages :: Integer
-	}
+	} deriving (Show, Eq)
 
 data SubscriberQueryParams = SubscriberQueryParams
 	{ subscriberGetFromDate :: Maybe Day
@@ -38,7 +38,7 @@ data SubscriberQueryParams = SubscriberQueryParams
 	, subscriberGetPageSize :: Integer
 	, subscriberGetOrderField :: Subscriber.OrderField
 	, subscriberGetOrderDirection :: OrderDirection
-	}
+	} deriving (Show, Eq)
 
 
 
