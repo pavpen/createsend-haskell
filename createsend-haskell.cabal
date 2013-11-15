@@ -4,6 +4,7 @@ Stability:	experimental
 License:	GPL
 Build-Type:	Simple
 Cabal-Version:	>= 1.9.2
+Category:	Network
 Synopsis:	Haskell wrapper for Campaign Monitor's HTTP API v.3.
 Description:
   A Haskell wrapper for Campaign Monitor's HTTP API v.3.
@@ -46,9 +47,29 @@ Homepage:	https://github.com/pavpen/createsend-haskell
 Bug-Reports:	https://github.com/pavpen/createsend-haskell/issues
 
 
+Source-Repository head
+  Type:		git
+  Location:	https://github.com/pavpen/createsend-haskell.git
+
+Source-Repository this
+  Type:		git
+  Location:	https://github.com/pavpen/createsend-haskell.git
+  Tag:		3.0.0.1-alpha.0
+
+
 Library
   Hs-Source-Dirs:	src
   Exposed-Modules:	CreateSendAPI.V3
+                        , CreateSendAPI.V3.Util
                         , CreateSendAPI.V3.Session
                         , CreateSendAPI.V3.Lists
   Build-Depends:	base < 5
+                        , aeson < 1.0
+                        , attoparsec-conduit >= 1.0 && <  2.0
+                        , basic-prelude >= 0.1 && < 1.0
+                        , bytestring
+                        , conduit >= 1.0 && < 2.0
+                        , http-conduit >= 0.1 && < 2.0
+                        , text < 1.0
+                        , transformers < 1.0
+                        , vector < 1.0
