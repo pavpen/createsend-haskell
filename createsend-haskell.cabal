@@ -62,7 +62,8 @@ Library
   Exposed-Modules:	CreateSendAPI.V3
                         , CreateSendAPI.V3.Util
                         , CreateSendAPI.V3.Session
-                        , CreateSendAPI.V3.Lists
+                        , CreateSendAPI.V3.List
+                        , CreateSendAPI.V3.List.Webhooks
   Build-Depends:	base < 5
                         , aeson < 1.0
                         , attoparsec-conduit >= 1.0 && <  2.0

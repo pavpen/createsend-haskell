@@ -3,7 +3,7 @@
 		, OverloadedStrings
 		, RecordWildCards #-}
 
-module CreateSendAPI.V3.Lists where
+module CreateSendAPI.V3.List.Webhooks where
 
 import           Control.Applicative	 ((<$>), (<*>))
 import           Control.Monad.IO.Class	 (MonadIO)
