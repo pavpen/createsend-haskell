@@ -9,11 +9,11 @@ Example use:
 {-# LANGUAGE OverloadedStrings #-}
 
 
-import 		 CreateSendAPI.V3
-import 		 Data.Aeson.Types	(Result (..))
-import qualified Data.ByteString.Char8	as BSC8
-import qualified Data.Foldable		as F
-import 		 System.IO		(hFlush, stdout)
+import 	         CreateSendAPI.V3
+import 	         Data.Aeson.Types       (Result (..))
+import qualified Data.ByteString.Char8  as BSC8
+import qualified Data.Foldable          as F
+import 	         System.IO              (hFlush, stdout)
 
 
 
@@ -34,7 +34,7 @@ main = do
     return ()
 ```
 
-You should be able to see you webhooks when you compile and run the above:
+You should be able to see your webhooks when you compile and run the above:
 
 	Campaign Monitor API Key: yourAPIKeyHere
 	List ID: yourListIDHere
