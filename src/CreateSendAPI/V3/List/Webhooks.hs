@@ -14,6 +14,7 @@ import           Data.Aeson.Types	 (Result (..))
 import qualified Data.ByteString	 as BS
 import qualified Data.ByteString.Char8	 as B
 import qualified Data.ByteString.Internal as B
+import qualified Data.ByteString.Lazy.Internal as LBS
 import           Data.Conduit            (($$+-))
 import qualified Data.Conduit		 as C
 import           Data.Conduit.Attoparsec (sinkParser)
@@ -26,7 +27,7 @@ import           Network.HTTP.Conduit    (Request, RequestBody (RequestBodyLBS),
 					  withManager)
 
 import           CreateSendAPI.V3.Session (ListRequest (..))
-import           CreateSendAPI.V3.Util	  (httpGetByteString, sinkByteString)
+import           CreateSendAPI.V3.Util	  (httpGetByteString)
 
 
 
@@ -132,7 +133,7 @@ getWebhooks listReq = do
 createWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
                   C.MonadThrow m)
 		 => ListRequest r -> WebhookEvents -> T.Text
-		 -> WebhookPayloadFormat -> m (Maybe B.ByteString)
+		 -> WebhookPayloadFormat -> m LBS.ByteString
 createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
     httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks.json"

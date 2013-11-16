@@ -20,6 +20,7 @@ import		 Data.Aeson.Parser		(json)
 import 		 Data.Aeson.Types		(Result (..))
 import qualified Data.ByteString		as BS
 import qualified Data.ByteString.Internal	as B
+import qualified Data.ByteString.Lazy.Internal	as LBS
 import 		 Data.Conduit			(($$+-))
 import qualified Data.Conduit			as C
 import 		 Data.Conduit.Attoparsec	(sinkParser)
@@ -35,7 +36,7 @@ import           CreateSendAPI.V3.List.Webhooks
 import 		 CreateSendAPI.V3.Session	(AuthenticatedRequest (..),
 						 ListRequest (..))
 import		 CreateSendAPI.V3.Util		(httpGetByteString,
-						 httpGetJSON, sinkByteString)
+						 httpGetJSON)
 
 
 
@@ -179,7 +180,7 @@ createList :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 	       C.MonadThrow m, r ~ C.ResourceT m)
 	      => AuthenticatedRequest r -> BS.ByteString -> T.Text -> T.Text
 	      -> Bool -> T.Text -> ListUnsubscribeSetting
-	      -> m (Maybe B.ByteString)
+	      -> m LBS.ByteString
 createList (AuthenticatedRequest req) clientID title unsubscribePage confirmedOptIn confirmationSuccessPage unsubscribeSetting = httpGetByteString $
     req { path = (path req) `BS.append` "lists/" `BS.append` 
 	clientID `BS.append` ".json"

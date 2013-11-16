@@ -29,8 +29,7 @@ import 		 CreateSendAPI.V3.PagedResult
 					  (SubscriberResultsPage,
 					   subscriberQueryParamsToStr)
 import           CreateSendAPI.V3.Session (ListRequest (..))
-import           CreateSendAPI.V3.Util	  (httpGetByteString, httpGetJSON,
-					   sinkByteString)
+import           CreateSendAPI.V3.Util	  (httpGetByteString, httpGetJSON)
 
 
 --
