@@ -72,6 +72,7 @@ Library
                         , CreateSendAPI.V3.Session
                         , CreateSendAPI.V3.Subscriber
                         , CreateSendAPI.V3.Util
+                        , CreateSendAPI.V3.Webhooks
   Build-Depends:	base < 5
                         , aeson < 1.0
                         , attoparsec-conduit >= 1.0 && <  2.0
