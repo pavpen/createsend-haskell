@@ -80,7 +80,7 @@ Library
                         , bytestring
                         , conduit >= 1.0 && < 2.0
                         , data-default < 1.0
-                        , http-conduit >= 0.1 && < 2.0
+                        , http-conduit >= 2.0 && < 3.0
                         , iproute >= 1.0 && < 2.0
                         , old-locale >= 1.0 && < 2.0
                         , text < 1.0

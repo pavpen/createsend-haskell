@@ -132,7 +132,7 @@ getWebhooks listReq = do
 
 createWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
                   C.MonadThrow m)
-		 => ListRequest r -> WebhookEvents -> T.Text
+		 => ListRequest -> WebhookEvents -> T.Text
 		 -> WebhookPayloadFormat -> m LBS.ByteString
 createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
     httpGetByteString $
@@ -145,8 +145,8 @@ createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
 	    }
 
 --activateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
---                    C.MonadThrow m, r ~ C.ResourceT m) =>
---                   ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
+--                    C.MonadThrow m) =>
+--                   ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 activateWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/activate.json"
@@ -155,7 +155,7 @@ activateWebhook (ListRequest req) webhookID = httpGetByteString $
 
 --deactivateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                      C.MonadThrow m) =>
---                     ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
+--                     ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 deactivateWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/deactivate.json"
@@ -164,7 +164,7 @@ deactivateWebhook (ListRequest req) webhookID = httpGetByteString $
 
 --deleteWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                  C.MonadThrow m) =>
---                 ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
+--                 ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 deleteWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` ".json"
@@ -173,7 +173,7 @@ deleteWebhook (ListRequest req) webhookID = httpGetByteString $
 
 --testWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
 --                C.MonadThrow m) =>
---               ListRequest r -> B.ByteString -> m (Maybe B.ByteString)
+--               ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 testWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/test.json"

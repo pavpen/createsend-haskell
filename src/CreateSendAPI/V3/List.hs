@@ -177,8 +177,8 @@ instance FromJSON ListSegmentDetails where
 --
 
 createList :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
-	       C.MonadThrow m, r ~ C.ResourceT m)
-	      => AuthenticatedRequest r -> BS.ByteString -> T.Text -> T.Text
+	       C.MonadThrow m)
+	      => AuthenticatedRequest -> BS.ByteString -> T.Text -> T.Text
 	      -> Bool -> T.Text -> ListUnsubscribeSetting
 	      -> m LBS.ByteString
 createList (AuthenticatedRequest req) clientID title unsubscribePage confirmedOptIn confirmationSuccessPage unsubscribeSetting = httpGetByteString $
