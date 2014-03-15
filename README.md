@@ -41,4 +41,4 @@ You should be able to see your webhooks when you compile and run the above:
 	Webhook {webhookID = "9d8b90d389501ff9b87fb10489121ae4", webhookEvents = WebhookEvents {webhookEvtSubscribe = True, webhookEvtDeactivate = True, webhookEvtUpdate = True}, webhookURL = "http://63883c55.ngrok.com/CampaignMonitor/event", webhookStatus = "Active", webhookPayloadFormat = WebhookFmtJSON}
 
 GPL license,
-(C) Pavel M. Penev, 2013--2014
+(C) Pavel M. Penev, 2013–2014
