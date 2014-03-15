@@ -19,7 +19,7 @@ import 		 Data.Vector		(Vector)
 --
 data EventBatch = EventBatch
 		{ events :: Vector EventParams
-		, listID :: BS.ByteString
+		, listID :: [Char]
 		}
 
 

@@ -48,7 +48,7 @@ data ListUnsubscribeSetting = ListUnsubscribeAll | ListUnsubscribeOnlyThis
 	deriving (Show, Eq)
 
 data ListDetails = ListDetails
-		 { listID :: BS.ByteString
+		 { listID :: [Char]
 		 , listTitle :: T.Text
 		 , listUnsubscribePage :: T.Text
 		 , listConfirmedOptIn :: Bool
@@ -92,8 +92,8 @@ data ListCustomFieldDetails = ListCustomFieldDetails
 			    } deriving (Show, Eq)
 
 data ListSegmentDetails = ListSegmentDetails
-			{ segmentListID :: BS.ByteString
-			, segmentID :: BS.ByteString
+			{ segmentListID :: [Char]
+			, segmentID :: [Char]
 			, segmentTitle :: T.Text
 			} deriving (Show, Eq)
 
