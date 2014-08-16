@@ -111,9 +111,6 @@ instance FromJSON WebhookDetails where
 -- HTTP Methods:
 --
 
---getWebhooksJSON :: (MonadIO m, MonadBaseControl IO m, C.MonadUnsafeIO m,
---                    C.MonadThrow m) =>
---                   ListRequest -> m Value
 getWebhooksJSON (ListRequest listReq) = withManager $ \manager -> do
         let req = listReq { path = (path listReq) `BS.append` "/webhooks.json"
 		          , method = "GET"
@@ -121,19 +118,12 @@ getWebhooksJSON (ListRequest listReq) = withManager $ \manager -> do
 	res <- http req manager
 	responseBody res $$+- sinkParser json
 
---getWebhooks :: (MonadIO m, MonadBaseControl IO m, C.MonadUnsafeIO m,
---                C.MonadThrow m) =>
---               ListRequest -> m (V.Vector Webhook)
 getWebhooks listReq = do
 	v <- getWebhooksJSON listReq
 	case fromJSON v of
 	  Error msg -> fail msg
 	  Success res -> return (res :: V.Vector WebhookDetails)
 
-createWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
-                  C.MonadThrow m)
-		 => ListRequest -> WebhookEvents -> T.Text
-		 -> WebhookPayloadFormat -> m LBS.ByteString
 createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
     httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks.json"
@@ -144,36 +134,24 @@ createWebhook (ListRequest req) webhookEvents webhookURL payloadFormat =
 		"PayloadFormat" .= webhookPayloadFormatToStr payloadFormat]
 	    }
 
---activateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
---                    C.MonadThrow m) =>
---                   ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 activateWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/activate.json"
 	    , method = "PUT"
 	    }
 
---deactivateWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
---                      C.MonadThrow m) =>
---                     ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 deactivateWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/deactivate.json"
 	    , method = "PUT"
 	    }
 
---deleteWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
---                  C.MonadThrow m) =>
---                 ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 deleteWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` ".json"
 	    , method = "DELETE"
 	    }
 
---testWebhook :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
---                C.MonadThrow m) =>
---               ListRequest -> B.ByteString -> m (Maybe B.ByteString)
 testWebhook (ListRequest req) webhookID = httpGetByteString $
 	req { path = (path req) `BS.append` "/webhooks/" `BS.append`
 		webhookID `BS.append` "/test.json"

@@ -176,11 +176,6 @@ instance FromJSON ListSegmentDetails where
 -- HTTP Methods:
 --
 
-createList :: (MonadIO m, C.MonadBaseControl IO m, C.MonadUnsafeIO m,
-	       C.MonadThrow m)
-	      => AuthenticatedRequest -> BS.ByteString -> T.Text -> T.Text
-	      -> Bool -> T.Text -> ListUnsubscribeSetting
-	      -> m LBS.ByteString
 createList (AuthenticatedRequest req) clientID title unsubscribePage confirmedOptIn confirmationSuccessPage unsubscribeSetting = httpGetByteString $
     req { path = (path req) `BS.append` "lists/" `BS.append` 
 	clientID `BS.append` ".json"
